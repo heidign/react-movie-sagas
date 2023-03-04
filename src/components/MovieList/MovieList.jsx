@@ -5,7 +5,7 @@ import './MovieList.css'
 function MovieList() {
 
     const dispatch = useDispatch();
-    const movies = useSelector(store => store.movies);
+    const listOfMovies = useSelector(store => store.movies);
 
     useEffect(() => {
         dispatch({ type: 'FETCH_MOVIES' });
@@ -15,7 +15,7 @@ function MovieList() {
         <main>
             <h1>MovieList</h1>
             <section className="movies">
-                {movies.map(movie => {
+                {listOfMovies.map(movie => {
                     return (
                         <div key={movie.id} >
                             <h3>{movie.title}</h3>
