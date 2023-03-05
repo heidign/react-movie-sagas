@@ -15,16 +15,15 @@ function App() {
           <MovieList />
         </Route>
 
-        {/* Add Movie page */}
         <Route path="/add-new-movie" exact>
           <MovieForm />
         </Route>
 
         {/* passing ID as parameter */}
         <Route exact path="/details/:id">
-          {/* Details page */}
           <MovieDetails />
         </Route>
+
       </Router>
     </div>
   );

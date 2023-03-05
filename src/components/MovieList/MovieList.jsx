@@ -16,7 +16,6 @@ function MovieList() {
 
   return (
     <main>
-      <h1>MovieList</h1>
       {loadingMovies ? (
         <ClipLoader />
       ) : (

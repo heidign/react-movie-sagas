@@ -47,7 +47,7 @@ function MovieDetails() {
             <Button variant="contained" onClick={handleEditing}>
               Edit
             </Button>
-            <h2>Movie Details: {movieDetails.title}</h2>
+            <h2>{movieDetails.title}</h2>
             <img src={movieDetails.poster} />
             <p> {movieDetails.description}</p>
             <Button variant="contained" onClick={goBack}>
