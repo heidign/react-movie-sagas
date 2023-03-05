@@ -1,8 +1,9 @@
-import MovieDetails from "../MovieDetails/MovieDetails";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-function EditDetails({movieDetails, handleEditing, clearDetails}) {
+function EditDetails({ movieDetails, handleEditing, clearDetails }) {
+    const dispatch = useDispatch();
     const [value, setValue] = useState({ title: "", description: "" });
 
     const handleChange = (e, key) => {
@@ -34,7 +35,7 @@ function EditDetails({movieDetails, handleEditing, clearDetails}) {
             <input name="poster" type="text" value={value.poster} onChange={e => handleChange()}/>
             </div>
             <div>
-            <textarea value={value.description} rows="4" cols="25"/>
+            <textarea value={value.description} rows="6" cols="55" onChange={handleChange} />
             </div>
             </form>
         </>

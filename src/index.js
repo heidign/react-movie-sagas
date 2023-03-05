@@ -50,6 +50,18 @@ function* fetchDetails(action) {
   }
 }
 
+// * Saga for fetching genres 
+function* fetchAllGenres() {
+  try {
+    const genres = yield axios.get("/api/genre");
+    yield wait(550);
+    yield put({ type: "SET_GENRES",  payload: { loading: false, genres: genres.data }
+});
+  } catch (error) {
+    console.log("get all error", error);
+  }
+}
+
 // * wait function for clip loader
 async function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -77,25 +89,17 @@ function* clearDetails() {
 function* submitEditDetails(action) {
   try {
     yield axios.put(`/api/movie/edit/${action.payload.id}`, action.payload );
-    // then need to fetch details
-    yield put ({ type: 'FETCH_DETAILS'})
+    // then need to fetch details, send respective id
+    yield put ({ type: 'FETCH_DETAILS', payload: action.payload.id})
   } catch (err) {
     console.error('Saga error submitting edit details', err);
-  }
-}
-// * Saga for fetching genres 
-function* fetchAllGenres() {
-  try {
-    const genres = yield axios.get("/api/genre");
-    yield put({ type: "SET_GENRES", payload: genres.data });
-  } catch (error) {
-    console.log("get all error", error);
   }
 }
 
 // Create sagaMiddleware
 const sagaMiddleware = createSagaMiddleware();
 
+// * Movies reducer
 // Used to store movies returned from the server
 const movies = (state = {loading: true}, action) => {
   switch (action.type) {
@@ -106,18 +110,19 @@ const movies = (state = {loading: true}, action) => {
   }
 };
 
+// * Genres reducer
 // Used to store the movie genres
 const genres = (state = {loading: true}, action) => {
   switch (action.type) {
     case "SET_GENRES":
-      return action.payload;
+      return {...action.payload };
     default:
       return state;
   }
 };
 
 // * Movie details reducer
-// Used to store the movie details, using default []
+// Used to store the movie details
 const movieDetails = (state = {loading: true}, action) => {
   switch (action.type) {
     case "SET_MOVIE_DETAILS":

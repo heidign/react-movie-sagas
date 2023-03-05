@@ -83,7 +83,7 @@ router.put("/edit/:id", (req, res) => {
 
   const updateEditQuery = `
   UPDATE "movies"
-  SET "title" = $1, poster = $2 "description" = $3
+  SET "title" = $1, poster = $2, "description" = $3
   WHERE "id" = $4;`;
 
   pool
