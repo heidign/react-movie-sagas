@@ -20,6 +20,7 @@ function* rootSaga() {
   yield takeEvery("SUBMIT_MOVIE", submitMovie);
   yield takeEvery("FETCH_GENRES", fetchAllGenres);
   yield takeEvery('CLEAR_ALL_DETAILS', clearDetails);
+  yield takeEvery('SUBMIT_EDITS', submitEditDetails);
 }
 
 function* fetchAllMovies() {
@@ -35,7 +36,6 @@ function* fetchAllMovies() {
 }
 // * Saga for fetching details
 function* fetchDetails(action) {
-  console.log("action type:", fetchDetails);
   // get all details from the DB
   try {
     const movieDetails = yield axios.get(`/api/movie/${action.payload}`);
@@ -61,20 +61,29 @@ function* submitMovie(action) {
     yield axios.post('/api/movie', { ...action.payload });
     // getting new movie after submitting a movie
     yield put({ type: "FETCH_MOVIES" });
-  } catch (error) {
-    console.log("POST new movie error", error);
+  } catch (err) {
+    console.error("POST new movie error", error);
   }
 }
 
 function* clearDetails() {
   try {
     yield put({ type: 'CLEAR_DETAILS' });
-  } catch (error) {
+  } catch (err) {
     console.error(err);
   }
 }
-
-// * Saga for fetching genres //
+// * Saga for submitting edit details
+function* submitEditDetails(action) {
+  try {
+    yield axios.put(`/api/movie/edit/${action.payload.id}`, action.payload );
+    // then need to fetch details
+    yield put ({ type: 'FETCH_DETAILS'})
+  } catch (err) {
+    console.error('Saga error submitting edit details', err);
+  }
+}
+// * Saga for fetching genres 
 function* fetchAllGenres() {
   try {
     const genres = yield axios.get("/api/genre");
