@@ -1,20 +1,32 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 function MovieForm() {
+  const genres = useSelector((store) => store.genres);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch({ type: "FETCH_GENRES" });
+  }, []);
+
   const [input, setInput] = useState({
     title: "",
     description: "",
     poster: "",
+    genre_id: 1,
   });
 
   const handleSubmit = (e) => {
     e.preventDefault;
-    dispatchEvent({
+    dispatch({
       type: "SUBMIT_MOVIE",
       payload: input,
     });
     clearInput();
+  };
+    
+  const handleSelect = () => {
+    setInput({ ...input, genre_id: e.target.value });
   };
 
   const handleChange = (e, key) => {
@@ -26,6 +38,7 @@ function MovieForm() {
       title: "",
       description: "",
       poster: "",
+      genre_id: 1,
     });
   };
 
@@ -60,6 +73,12 @@ function MovieForm() {
           />
           <br></br>
           <input type="submit" value="Submit" onClick={handleSubmit} />
+                  
+          <select onChange={(e) => handleChange(e, 'genre_id')}>
+            {genres.map((genre) => (
+              <option value={input.genre_id}>{genre.name}</option>
+            ))}
+          </select>
         </form>
       </div>
     </>
