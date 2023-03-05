@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 import { Button } from "@mui/material";
 
 function MovieDetails() {
@@ -9,6 +10,8 @@ function MovieDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const movieDetails = useSelector((store) => store.movieDetails);
+  const loadingDetails = useSelector((store) => store.movieDetails.loading);
+
 
   useEffect(() => {
     console.log("id:", id);
@@ -17,15 +20,27 @@ function MovieDetails() {
 
   const goBack = () => {
     history.goBack("/");
+    clearDetails();
   };
+
+  const clearDetails = () => {
+    dispatch({ type: 'CLEAR_ALL_DETAILS'});
+  }
 
   return (
     <div>
       <h2>Movie Details: {movieDetails.title}</h2>
+      {loadingDetails ? (
+        <ClipLoader />
+      ) : (
+        <>
           <img src={movieDetails.poster} />
-          {/* {JSON.stringify(movieDetails)} */}
           <p>{movieDetails.description}</p>
-      <Button variant="contained" onClick={goBack}>Back</Button>
+          <Button variant="contained" onClick={goBack}>
+            Back
+          </Button>
+        </>
+      )}
     </div>
   );
 }
