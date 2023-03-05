@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { Input, Button } from "@mui/material";
 
 function MovieForm() {
   const genres = useSelector((store) => store.genres);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch({ type: "FETCH_GENRES" });
@@ -17,16 +20,20 @@ function MovieForm() {
   });
 
   const handleSubmit = (e) => {
-    e.preventDefault;
+    e.preventDefault();
+    // TODO: handle form validation
+    console.log("input:", input);
+
     dispatch({
       type: "SUBMIT_MOVIE",
       payload: input,
     });
+    history.push("/");
     clearInput();
   };
-    
-  const handleSelect = () => {
-    setInput({ ...input, genre_id: e.target.value });
+
+  const cancelSubmit = () => {
+    history.push("/");
   };
 
   const handleChange = (e, key) => {
@@ -52,7 +59,7 @@ function MovieForm() {
             placeholder="Movie Title"
             onChange={(e) => handleChange(e, "title")}
           />
-          <br></br>
+          <br/>
 
           {/* text box */}
           <textarea
@@ -62,7 +69,7 @@ function MovieForm() {
             rows="4"
             cols="35"
           ></textarea>
-          <br></br>
+          <br/>
 
           {/* poster */}
           <input
@@ -71,10 +78,11 @@ function MovieForm() {
             onChange={(e) => handleChange(e, "poster")}
             value={input.poster}
           />
-          <br></br>
-          <input type="submit" value="Submit" onClick={handleSubmit} />
-                  
-          <select onChange={(e) => handleChange(e, 'genre_id')}>
+          <br/>
+          <Button variant="outlined" type="submit" value="Save" onClick={handleSubmit}>Save</Button>
+          <Button variant="outlined" type="button" value="Cancel" onClick={cancelSubmit} >Cancel</Button>
+
+          <select onChange={(e) => handleChange(e, "genre_id")}>
             {genres.map((genre) => (
               <option value={input.genre_id}>{genre.name}</option>
             ))}
