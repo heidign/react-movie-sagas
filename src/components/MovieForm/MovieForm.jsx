@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Input, Button } from "@mui/material";
+import { ClipLoader } from "react-spinners";
+import { Button } from "@mui/material";
 
 function MovieForm() {
-  const genres = useSelector((store) => store.genres);
+  const genres = useSelector((store) => store.genres.genres);
+  const loadingGenres = useSelector((store) => store.genres.loading);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -52,42 +54,54 @@ function MovieForm() {
   return (
     <>
       <div>
+      {loadingGenres ? (
+        <ClipLoader />
+      ) : (
+          
         <form onSubmit={handleSubmit}>
           {/* Title */}
+          <div>
           <input
             type="text"
             placeholder="Movie Title"
             onChange={(e) => handleChange(e, "title")}
           />
-          <br/>
+          </div>
 
           {/* text box */}
+          <div> 
           <textarea
-            placeholder="description"
+            placeholder="Enter movie description..."
             onChange={(e) => handleChange(e, "description")}
             value={input.description}
             rows="4"
             cols="35"
           ></textarea>
-          <br/>
+          </div>
 
           {/* poster */}
+          <div>
           <input
             type="text"
             placeholder="Poster URL"
             onChange={(e) => handleChange(e, "poster")}
             value={input.poster}
           />
-          <br/>
-          <Button variant="outlined" type="submit" value="Save" onClick={handleSubmit}>Save</Button>
-          <Button variant="outlined" type="button" value="Cancel" onClick={cancelSubmit} >Cancel</Button>
-
+          {/* genres dropdown */}
           <select onChange={(e) => handleChange(e, "genre_id")}>
             {genres.map((genre) => (
-              <option value={input.genre_id}>{genre.name}</option>
+              <option key={genre.id} value={input.genre_id}>{genre.name}</option>
             ))}
           </select>
+          </div>
+
+
+
+          
+          <Button variant="outlined" size="small" type="submit" value="Save" onClick={handleSubmit}>Save</Button>
+          <Button variant="outlined" size="small" type="button" value="Cancel" onClick={cancelSubmit} >Cancel</Button>
         </form>
+      )}
       </div>
     </>
   );
