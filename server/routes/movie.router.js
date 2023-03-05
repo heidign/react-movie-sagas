@@ -77,4 +77,29 @@ router.post("/", (req, res) => {
     });
 });
 
+// * EDIT DETAILS PUT REQUEST, by id
+router.put("/edit/:id", (req, res) => {
+  console.log(req.body);
+
+  const updateEditQuery = `
+  UPDATE "movies"
+  SET "title" = $1, poster = $2 "description" = $3
+  WHERE "id" = $4;`;
+
+  pool
+    .query(updateEditQuery, [
+      req.body.title,
+      req.body.poster,
+      req.body.description,
+      req.params.id
+    ])
+    .then((dbRes) => {
+      console.log("Edit movie details id:", dbRes.rows);
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error('error in edit details PUT', err);
+      res.sendStatus(500);
+    });
+});
 module.exports = router;

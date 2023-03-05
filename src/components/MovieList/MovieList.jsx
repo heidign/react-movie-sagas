@@ -20,7 +20,7 @@ function MovieList() {
       {loadingMovies ? (
         <ClipLoader />
       ) : (
-        <>
+          <>
           <Link to="/add-new-movie">Add New Movie</Link>
           <section className="movies">
             {listOfMovies.map((movie) => {
