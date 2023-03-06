@@ -6,13 +6,13 @@ import { Button } from "@mui/material";
 import EditDetails from "../EditDetails/EditDetails";
 
 function MovieDetails() {
-
   const history = useHistory();
   // * getting id key from path params
   const { id } = useParams();
   const dispatch = useDispatch();
   const movieDetails = useSelector((store) => store.movieDetails);
   const loadingDetails = useSelector((store) => store.movieDetails.loading);
+  const genreDetails = useSelector((store) => store.movieDetails.genres);
   const [edit, setEdit] = useState(false);
 
   useEffect(() => {
@@ -37,24 +37,34 @@ function MovieDetails() {
   return (
     <div>
       <>
-
         {loadingDetails ? (
           <ClipLoader />
         ) : (
-            <>
-              {edit ?
-                <EditDetails movieDetails={movieDetails} handleEditing={handleEditing} clearDetails={clearDetails} /> : <>
-            <Button variant="contained" onClick={handleEditing}>
-              Edit
-            </Button>
-            <h2>{movieDetails.title}</h2>
-            <img src={movieDetails.poster} />
-            <p> {movieDetails.description}</p>
-            <Button variant="contained" onClick={goBack}>
-              Back
-              </Button> </>
-              }
-
+          <>
+            {edit ? (
+              <EditDetails
+                movieDetails={movieDetails}
+                handleEditing={handleEditing}
+                clearDetails={clearDetails}
+              />
+            ) : (
+              <>
+                <Button variant="outlined" size="small" onClick={handleEditing}>
+                  Edit
+                </Button>
+                <h2>{movieDetails.title}</h2>
+                <img src={movieDetails.poster} />
+                <ul>
+                  {genreDetails.map((genre, i) => (
+                    <li key={i}>{genre}</li>
+                  ))}
+                </ul>
+                <p> {movieDetails.description}</p>
+                <Button variant="contained" onClick={goBack}>
+                  Back
+                </Button>{" "}
+              </>
+            )}
           </>
         )}
       </>

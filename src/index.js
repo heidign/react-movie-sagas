@@ -18,7 +18,6 @@ function* rootSaga() {
   yield takeEvery("FETCH_DETAILS", fetchDetails);
   yield takeEvery("FETCH_GENRES", fetchAllGenres);
   yield takeEvery("SUBMIT_MOVIE", submitMovie);
-  yield takeEvery("FETCH_GENRES", fetchAllGenres);
   yield takeEvery('CLEAR_ALL_DETAILS', clearDetails);
   yield takeEvery('SUBMIT_EDITS', submitEditDetails);
 }
@@ -27,7 +26,6 @@ function* fetchAllMovies() {
   // get all movies from the DB
   try {
     const movies = yield axios.get("/api/movie");
-    // console.log("get all:", movies.data);
     yield wait(500);
     yield put({ type: "SET_MOVIES", payload: { loading: false, movies: movies.data } });
   } catch {
@@ -39,11 +37,15 @@ function* fetchDetails(action) {
   // get all details from the DB
   try {
     const movieDetails = yield axios.get(`/api/movie/${action.payload}`);
-    console.log("Details:", movieDetails);
-    yield wait(1000);
+    const genreDetails = yield axios.get(`/api/genre/${action.payload}`);
+    yield wait(500);
+    console.log('GENRE DETAILS DATA', genreDetails.data);
     yield put({
-      type: "SET_MOVIE_DETAILS", payload: { loading: false, ...movieDetails.data, }
-      // genres: ...genreDetails.data
+      type: "SET_MOVIE_DETAILS", payload: {
+        loading: false,
+        ...movieDetails.data,
+        genres: genreDetails.data.map((genre) => genre.genre)
+      }
     });
   } catch (error) {
     console.log("get all error", error);
@@ -57,8 +59,8 @@ function* fetchAllGenres() {
     yield wait(550);
     yield put({ type: "SET_GENRES",  payload: { loading: false, genres: genres.data }
 });
-  } catch (error) {
-    console.log("get all error", error);
+  } catch (err) {
+    console.error("get all error", err);
   }
 }
 
@@ -74,7 +76,7 @@ function* submitMovie(action) {
     // getting new movie after submitting a movie
     yield put({ type: "FETCH_MOVIES" });
   } catch (err) {
-    console.error("POST new movie error", error);
+    console.error("POST new movie error", err);
   }
 }
 
@@ -112,7 +114,8 @@ const movies = (state = {loading: true}, action) => {
 
 // * Genres reducer
 // Used to store the movie genres
-const genres = (state = {loading: true}, action) => {
+const genres = (state = { loading: true, genres: []}, action) => {
+ console.log('GENRES REDUCER', genres)
   switch (action.type) {
     case "SET_GENRES":
       return {...action.payload };
@@ -126,7 +129,6 @@ const genres = (state = {loading: true}, action) => {
 const movieDetails = (state = {loading: true}, action) => {
   switch (action.type) {
     case "SET_MOVIE_DETAILS":
-      console.log("Details:", action.payload);
       return action.payload;
     case 'CLEAR_DETAILS':
       return {loading: true}
